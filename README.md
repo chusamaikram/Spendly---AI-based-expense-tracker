@@ -48,6 +48,12 @@ A modern, full-stack personal finance tracker built with **Next.js 15**, **Fireb
 - Password strength indicator on signup
 - Per-user data isolation — users only see their own data
 
+### 🛡️ App Check
+- Firebase App Check enabled with **reCAPTCHA v3** provider
+- Blocks unauthorized clients from accessing Firestore and other Firebase resources
+- All API requests are verified — only legitimate app instances can read/write data
+- Enforced on both Firestore and Authentication backends
+
 ### 🎨 UI/UX
 - **Dark and Light themes** with smooth toggle (persisted in localStorage)
 - Warm cyan color scheme (`#22d3ee`) as primary accent
@@ -67,6 +73,7 @@ A modern, full-stack personal finance tracker built with **Next.js 15**, **Fireb
 | Styling | Tailwind CSS v4 |
 | Database | Firebase Firestore |
 | Auth | Firebase Authentication |
+| App Security | Firebase App Check (reCAPTCHA v3) |
 | AI | Google Gemini 1.5 Flash |
 | Charts | ECharts |
 | Icons | Lucide React |
@@ -137,7 +144,7 @@ spendly/
 │   ├── ai/
 │   │   └── gemini.js               # Gemini config, callGemini(), prompts
 │   ├── firebase/
-│   │   ├── config.js               # Firebase initialization
+│   │   ├── config.js               # Firebase initialization + App Check setup
 │   │   ├── auth.js                 # Auth functions (email, Google, signOut)
 │   │   └── expenses.js             # Firestore CRUD for expenses + chat sessions
 │   ├── hooks/
@@ -206,7 +213,15 @@ npm install
 4. Apply security rules from `firestore.rules`
 5. Go to **Project Settings** → Your Apps → Web App → copy config
 
-### 3. Gemini API Key
+### 3. Firebase App Check
+
+1. In Firebase Console → **App Check** → Register your web app
+2. Choose **reCAPTCHA v3** as the provider
+3. Go to [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin) → register your site → copy the **site key**
+4. Add the site key to `.env.local` (see Environment Variables below)
+5. In Firebase Console → App Check → **Enforce** App Check for Firestore and Authentication
+
+### 4. Gemini API Key
 
 1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 2. Click **Create API Key**
@@ -224,6 +239,9 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
 NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
+
+# Firebase App Check (reCAPTCHA v3)
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=6Lc...
 
 # Gemini AI
 GEMINI_API_KEY=AIzaSy...

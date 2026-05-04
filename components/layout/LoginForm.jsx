@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
 import { signInWithEmail, signInWithGoogle } from '../../lib/firebase/auth';
+import SecurityBadge from '../ui/SecurityBadge';
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none">
@@ -141,6 +142,8 @@ export default function LoginForm() {
           Create one
         </Link>
       </p>
+
+      <SecurityBadge />
     </div>
   );
 }

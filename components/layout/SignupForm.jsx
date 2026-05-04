@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { signUpWithEmail, signInWithGoogle } from '../../lib/firebase/auth';
+import SecurityBadge from '../ui/SecurityBadge';
 
 const RULES = [
   { test: v => v.length >= 8,    label: '8+ characters' },
@@ -195,6 +196,8 @@ export default function SignupForm() {
           Sign in
         </Link>
       </p>
+
+      <SecurityBadge />
     </div>
   );
 }
