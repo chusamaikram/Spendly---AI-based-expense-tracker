@@ -44,9 +44,10 @@ export default function LoginForm() {
     setError('');
     setGoogleLoading(true);
     try {
-      const result = await signInWithGoogle();
-      // result is null when redirect was used (page will reload)
-      if (result?.user) router.push('/dashboard');
+      await signInWithGoogle();
+      // signInWithPopup resolves here — push immediately
+      // signInWithRedirect never resolves — page navigates away to Google
+      router.push('/dashboard');
     } catch (err) {
       setError(friendlyError(err.code));
       setGoogleLoading(false);
