@@ -5,15 +5,15 @@ import { useAuth } from '../../lib/hooks/useAuth';
 import SplashScreen from './SplashScreen';
 
 export default function PageLoader({ children }) {
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const pathname = usePathname();
 
-  if (!loading) return children;
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup');
 
-  const label =
-    pathname === '/' ? 'Loading content' :
-    pathname.startsWith('/login') || pathname.startsWith('/signup') ? 'Authenticating' :
-    'Loading dashboard';
+  // Show splash if: auth is resolving OR user is logged in but still on login/signup (mid-redirect)
+  if (loading || (user && isAuthPage)) {
+    return <SplashScreen label="Authenticating" />;
+  }
 
-  return <SplashScreen label={label} />;
+  return children;
 }

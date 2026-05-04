@@ -54,11 +54,11 @@ export default function SignupForm() {
     setError('');
     setGoogleLoading(true);
     try {
-      await signInWithGoogle();
-      router.push('/dashboard');
+      const result = await signInWithGoogle();
+      // result is null when redirect was used (page will reload)
+      if (result?.user) router.push('/dashboard');
     } catch (err) {
       setError(friendlyError(err.code));
-    } finally {
       setGoogleLoading(false);
     }
   };
