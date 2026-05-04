@@ -208,6 +208,7 @@ function friendlyError(code) {
     'auth/invalid-email': 'Invalid email address.',
     'auth/weak-password': 'Password is too weak.',
     'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/cancelled-popup-request': 'Sign-in cancelled.',
   };
   return map[code] || 'Something went wrong. Please try again.';
 }

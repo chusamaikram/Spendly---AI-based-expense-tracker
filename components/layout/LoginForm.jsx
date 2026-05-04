@@ -155,6 +155,7 @@ function friendlyError(code) {
     'auth/wrong-password': 'Incorrect password.',
     'auth/too-many-requests': 'Too many attempts. Please wait a moment.',
     'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/cancelled-popup-request': 'Sign-in cancelled.',
   };
   return map[code] || 'Something went wrong. Please try again.';
 }
