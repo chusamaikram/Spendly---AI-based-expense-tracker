@@ -1,152 +1,303 @@
-🚀 Spendly — AI Expense Tracker
-A premium AI-powered expense tracker built with Next.js 15, Firebase, and Claude AI. Track expenses using natural language — just describe what you spent and the AI handles everything else.
+# ⚡ Spendly — AI-Powered Finance Tracker
+
+A modern, full-stack personal finance tracker built with **Next.js 15**, **Firebase**, and **Gemini AI**. Track income and expenses through natural conversation in English, Roman Urdu, or mixed language. Get AI-generated financial reports, manage person-wise ledgers (Khata), and visualize your spending with interactive ECharts.
+
 ---
-✨ Features
-AI Expense Parsing — Claude AI extracts amount, category, merchant, payment method, and date from any natural sentence
-Chat-Style Logging — Conversational expense logging with no forms
-Smart Categories — Auto-detects Food, Transport, Shopping, Bills, Health, Entertainment
-Natural Date Understanding — "yesterday", "last night", "last week", specific dates
-Voice Input — Speak your expenses (Web Speech API)
-Dashboard Analytics — Total spending, category donut chart, monthly bar chart
-Transaction History — Searchable, filterable, deletable
-Dark/Light Theme — Premium dark theme by default with smooth toggle
-Firebase Auth — Email/password + Google OAuth
-Firestore Storage — Per-user expense data with proper schema
+
+## ✨ Features
+
+### 🤖 Gemini AI Assistant
+- Natural language transaction logging in **English**, **Roman Urdu**, and mixed language
+- Understands phrases like *"meny azhar ko 500 diye"*, *"aaj chai pe 150 kharch kiye"*, *"salary aayi 45000"*
+- Automatically detects transaction type (income/expense), category, merchant, payment method, and date
+- Generates **weekly and monthly financial reports** with category breakdown and actionable tips
+- Conversational chat with full context history across sessions
+
+### 💬 AI Chat with History
+- Dedicated AI Logger page with collapsible history sidebar
+- Chat sessions **auto-saved to Firebase** after 2 seconds of inactivity
+- Load, resume, or delete any previous chat session
+- Floating **Bot button** accessible from every dashboard page
+- Voice input support via Web Speech API
+
+### 📊 Dashboard & Analytics
+- **Net Balance**, Total Income, Total Expenses stat cards
+- **Monthly bar chart** — income vs expense side-by-side (ECharts)
+- **Category donut chart** — expense breakdown by category (ECharts)
+- Recent transactions list with skeleton loaders
+- All stats include data from all sources (categories + person transactions)
+
+### 💳 Transaction Management
+- Add transactions manually via modal (income or expense)
+- Full transaction list with **search**, **type filter** (income/expense), and **category filter**
+- Group transactions by date with daily totals
+- Delete transactions with confirmation
+- Income shown in green (`+`), expenses in red (`-`)
+
+### 👥 Khata (Person Ledger)
+- Track money exchanged with specific people
+- Per-person ledger showing **Given** (red) and **Taken** (green) amounts
+- Net balance per person: *"They owe you"* or *"You owe them"* with correct color coding
+- Expandable transaction history per person
+- Summary cards for total given and taken across all people
+- AI understands: *"gave 400 to Ali"*, *"Ali returned 200"*, *"meny sara sy 300 liye"*
+
+### 🔐 Authentication
+- Email/password signup and login
+- Google OAuth sign-in
+- Password strength indicator on signup
+- Per-user data isolation — users only see their own data
+
+### 🎨 UI/UX
+- **Dark and Light themes** with smooth toggle (persisted in localStorage)
+- Warm cyan color scheme (`#22d3ee`) as primary accent
+- Beautiful **splash screen** with animated logo and progress bar on page load
+- Skeleton loaders for all data-heavy sections
+- Fully responsive — works on mobile and desktop
+- Sticky navbar on landing page
+- Toast notifications for all actions
+
 ---
-📁 Project Structure
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Styling | Tailwind CSS v4 |
+| Database | Firebase Firestore |
+| Auth | Firebase Authentication |
+| AI | Google Gemini 1.5 Flash |
+| Charts | ECharts |
+| Icons | Lucide React |
+| Notifications | React Hot Toast |
+| Fonts | Syne, DM Sans, JetBrains Mono |
+
+---
+
+## 📁 Project Structure
+
 ```
-expense-tracker/
+spendly/
 ├── app/
 │   ├── (auth)/
-│   │   ├── login/page.js          # Login page
-│   │   ├── signup/page.js         # Signup page
-│   │   └── layout.js              # Auth layout
+│   │   ├── login/page.jsx          # Login page
+│   │   ├── signup/page.jsx         # Signup page
+│   │   └── layout.jsx              # Auth layout with theme toggle + back link
 │   ├── api/
-│   │   └── parse-expense/route.js # AI parsing API route
+│   │   ├── chat/route.js           # Unified AI chat endpoint (Gemini)
+│   │   ├── parse-expense/route.js  # Transaction parser endpoint
+│   │   └── report/route.js         # Financial report generator
 │   ├── dashboard/
-│   │   ├── page.js                # Dashboard page
-│   │   └── layout.js
-│   ├── layout.js                  # Root layout
-│   ├── page.js                    # Landing page
-│   └── providers.js               # Context providers
+│   │   ├── page.jsx                # Dashboard entry point
+│   │   └── layout.jsx
+│   ├── layout.jsx                  # Root layout with fonts + providers
+│   ├── page.jsx                    # Landing page entry
+│   └── providers.jsx               # AuthProvider + ExpensesProvider + PageLoader
 │
 ├── components/
 │   ├── chat/
-│   │   └── ChatInterface.js       # AI chat expense logger
+│   │   ├── ChatInterface.jsx       # Main chat page (logic + layout)
+│   │   ├── ChatHistorySidebar.jsx  # Collapsible history panel
+│   │   ├── ChatInput.jsx           # Textarea + send/mic buttons
+│   │   ├── MessageBubble.jsx       # Renders all message types
+│   │   ├── TransactionCard.jsx     # Logged transaction card in chat
+│   │   ├── ReportCard.jsx          # Financial report card in chat
+│   │   └── TypingIndicator.jsx     # Animated dots while AI responds
 │   ├── dashboard/
-│   │   ├── DashboardShell.js      # Main dashboard wrapper
-│   │   ├── DashboardOverview.js   # Stats & charts overview
-│   │   ├── Sidebar.js             # Navigation sidebar
-│   │   ├── TransactionList.js     # All transactions view
-│   │   ├── CategoryDonut.js       # SVG donut chart
-│   │   └── SpendingBar.js         # Monthly bar chart
+│   │   ├── DashboardShell.jsx      # Main layout with sidebar + routing
+│   │   ├── DashboardOverview.jsx   # Stats, charts, recent transactions
+│   │   ├── Sidebar.jsx             # Navigation sidebar
+│   │   ├── TransactionList.jsx     # Full transaction list with filters
+│   │   ├── KhataPage.jsx           # Person-wise ledger page
+│   │   ├── AddExpenseModal.jsx     # Manual add transaction modal
+│   │   ├── CategoryDonut.jsx       # ECharts donut chart
+│   │   └── SpendingBar.jsx         # ECharts bar chart
 │   ├── landing/
-│   │   └── LandingPage.js         # Marketing landing page
+│   │   ├── LandingPage.jsx         # Landing page (server component)
+│   │   ├── Navbar.jsx              # Sticky navbar with theme toggle
+│   │   └── HeroDemo.jsx            # Animated typing demo (client island)
 │   ├── layout/
-│   │   ├── LoginForm.js           # Login form
-│   │   └── SignupForm.js          # Signup form
+│   │   ├── LoginForm.jsx           # Login form
+│   │   └── SignupForm.jsx          # Signup form with password strength
 │   └── ui/
-│       └── ThemeToggle.js         # Dark/light theme toggle
+│       ├── Button.jsx              # Reusable button (primary/ghost/danger)
+│       ├── Modal.jsx               # Modal wrapper with Escape key support
+│       ├── StatCard.jsx            # Dashboard stat card
+│       ├── TransactionRow.jsx      # Single transaction row
+│       ├── EmptyState.jsx          # Empty placeholder with action
+│       ├── PageHeader.jsx          # Sticky page header
+│       ├── FilterChip.jsx          # Filter pill button
+│       ├── Skeleton.jsx            # Shimmer skeleton loader
+│       ├── SplashScreen.jsx        # Full-screen loading animation
+│       ├── PageLoader.jsx          # Route-aware auth loading wrapper
+│       └── ThemeToggle.jsx         # Dark/light mode toggle
 │
 ├── lib/
+│   ├── ai/
+│   │   └── gemini.js               # Gemini config, callGemini(), prompts
 │   ├── firebase/
-│   │   ├── config.js              # Firebase initialization
-│   │   ├── auth.js                # Auth functions
-│   │   └── expenses.js            # Firestore CRUD
+│   │   ├── config.js               # Firebase initialization
+│   │   ├── auth.js                 # Auth functions (email, Google, signOut)
+│   │   └── expenses.js             # Firestore CRUD for expenses + chat sessions
 │   ├── hooks/
-│   │   ├── useAuth.js             # Auth context & hook
-│   │   ├── useExpenses.js         # Expenses data hook
-│   │   └── useTheme.js            # Theme toggle hook
+│   │   ├── useAuth.js              # AuthContext + useAuth hook
+│   │   ├── useExpenses.js          # ExpensesContext + useExpenses hook
+│   │   └── useTheme.js             # Theme toggle hook
 │   └── utils/
-│       └── expenseParser.js       # AI parsing utilities & helpers
+│       └── expenseParser.js        # CATEGORY_META, formatCurrency, getPersonLedger
 │
 ├── styles/
-│   └── globals.css                # Global styles & CSS variables
+│   └── globals.css                 # Tailwind v4 + CSS variables + utility classes
 │
-├── .env.local.example             # Environment variables template
-├── tailwind.config.js
+├── public/
+│   └── favicon.svg
+│
+├── firestore.rules                 # Firestore security rules
+├── .gitignore
 ├── next.config.js
+├── postcss.config.js
 └── package.json
 ```
+
 ---
-🛠️ Setup Instructions
-1. Clone & Install
+
+## 🗄️ Firestore Data Structure
+
+```
+users/
+└── {userId}/
+    ├── expenses/
+    │   └── {expenseId}
+    │       ├── type: "incoming" | "outgoing"
+    │       ├── amount: number
+    │       ├── category: "food" | "transport" | "shopping" | "bills" | "health" | "entertainment" | "income" | "person" | "other"
+    │       ├── merchant: string
+    │       ├── person: string (only when category = "person")
+    │       ├── paymentMethod: "cash" | "card" | "online"
+    │       ├── date: Timestamp
+    │       ├── description: string
+    │       └── createdAt: Timestamp
+    └── chats/
+        └── {chatId}
+            ├── title: string
+            ├── messages: array
+            ├── createdAt: Timestamp
+            └── updatedAt: Timestamp
+```
+
+---
+
+## 🚀 Setup
+
+### 1. Clone & Install
+
 ```bash
-cd expense-tracker
+git clone https://github.com/your-username/spendly.git
+cd spendly
 npm install
 ```
-2. Firebase Setup
-Go to Firebase Console
-Create a new project
-Enable Authentication → Sign-in methods → Email/Password + Google
-Create a Firestore Database in production mode
-Add these Firestore security rules:
+
+### 2. Firebase Setup
+
+1. Go to [Firebase Console](https://console.firebase.google.com) → Create a new project
+2. Enable **Authentication** → Sign-in methods → **Email/Password** + **Google**
+3. Create a **Firestore Database** in production mode
+4. Apply security rules from `firestore.rules`
+5. Go to **Project Settings** → Your Apps → Web App → copy config
+
+### 3. Gemini API Key
+
+1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+2. Click **Create API Key**
+3. Copy the key (starts with `AIza...`)
+
+### 4. Environment Variables
+
+Create `.env.local` in the project root:
+
+```env
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
+NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
+
+# Gemini AI
+GEMINI_API_KEY=AIzaSy...
+```
+
+### 5. Firestore Security Rules
+
+In Firebase Console → Firestore → Rules, paste:
+
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /expenses/{expenseId} {
-      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    match /users/{userId}/expenses/{expenseId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /users/{userId}/chats/{chatId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
 ```
-Get your Firebase config from Project Settings → Your Apps → Web App
-3. Anthropic API
-Get your API key from console.anthropic.com
-The app uses `claude-haiku-4-5` for fast, cost-effective parsing
-4. Environment Variables
-Create `.env.local`:
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=...
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
-NEXT_PUBLIC_FIREBASE_APP_ID=...
 
-ANTHROPIC_API_KEY=sk-ant-...
-```
-5. Run
+### 6. Run
+
 ```bash
 npm run dev
 ```
-Open http://localhost:3000
+
+Open [http://localhost:3000](http://localhost:3000)
+
 ---
-🎨 Design System
-Token	Value
-Primary Font	Syne (headings)
-Body Font	DM Sans
-Mono Font	JetBrains Mono
-Accent Color	Volt Green `#a0e620`
-Background	Obsidian `#05050c`
-Theme	Dark by default, light toggle
+
+## 🤖 AI Examples
+
+### Transaction Logging
+
+| Input | Type | Category | Person |
+|---|---|---|---|
+| `"Spent 500 on lunch"` | Outgoing | Food | — |
+| `"Salary aayi 45000"` | Incoming | Income | — |
+| `"Petrol dala 2000 ka"` | Outgoing | Transport | — |
+| `"Meny Ali ko 400 diye"` | Outgoing | Person | Ali |
+| `"Azhar ne mujhe 300 diye"` | Incoming | Person | Azhar |
+| `"Bijli ka bill diya 2500"` | Outgoing | Bills | — |
+| `"Meny sara sy 1000 liye khane ke liye"` | Incoming | Person | Sara |
+
+### Report Generation
+
+| Input | Action |
+|---|---|
+| `"Show my monthly report"` | Generates last 30 days report |
+| `"Weekly spending summary"` | Generates last 7 days report |
+| `"Mera report dikhao"` | Generates report in Roman Urdu |
+
 ---
-📊 Firestore Schema
-```js
-// Collection: expenses
-{
-  userId: string,         // Firebase Auth UID
-  amount: number,         // e.g. 450
-  category: string,       // food|transport|shopping|bills|health|entertainment|other
-  merchant: string,       // e.g. "Espresso"
-  paymentMethod: string,  // cash|card|online
-  date: Timestamp,        // Firebase Timestamp
-  description: string,    // Raw or cleaned text
-  createdAt: Timestamp,   // Server timestamp
-}
-```
+
+## 🎨 Design System
+
+| Token | Value |
+|---|---|
+| Primary Accent | Cyan `#22d3ee` |
+| Income Color | Emerald `#34d399` |
+| Expense Color | Rose `#fb7185` |
+| Dark Background | Slate `#020617` |
+| Light Background | `#f8fafc` |
+| Heading Font | Syne |
+| Body Font | DM Sans |
+| Mono Font | JetBrains Mono |
+
 ---
-🤖 AI Parsing Examples
-Input	Amount	Category	Merchant
-"Bought coffee for 450 at Espresso"	450	food	Espresso
-"Spent 400 on coffee"	400	food	Unknown
-"Careem ride 320 by card"	320	transport	Careem
-"Netflix 1500 last night"	1500	bills	Netflix
-"Groceries at Imtiaz, paid 3200 cash"	3200	food	Imtiaz
----
-🚀 Deploy
+
+## 📦 Deploy
+
 ```bash
 # Vercel (recommended)
 npx vercel --prod
@@ -155,3 +306,9 @@ npx vercel --prod
 npm run build
 npm start
 ```
+
+---
+
+## 📝 License
+
+ISC © 2025 Spendly
