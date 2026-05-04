@@ -45,9 +45,8 @@ export default function LoginForm() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      // page navigates away to Google — nothing runs after this
     } catch (err) {
-      console.log('[LoginForm] Google error:', err.code);
       setError(friendlyError(err.code));
       setGoogleLoading(false);
     }
