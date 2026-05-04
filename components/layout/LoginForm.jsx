@@ -45,10 +45,9 @@ export default function LoginForm() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      // signInWithPopup resolves here — push immediately
-      // signInWithRedirect never resolves — page navigates away to Google
       router.push('/dashboard');
     } catch (err) {
+      console.log('[LoginForm] Google error:', err.code);
       setError(friendlyError(err.code));
       setGoogleLoading(false);
     }
